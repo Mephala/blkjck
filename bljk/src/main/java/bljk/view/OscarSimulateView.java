@@ -3,6 +3,8 @@ package bljk.view;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -60,7 +62,15 @@ public class OscarSimulateView extends JFrame {
 		contentPane.add(scrollPane);
 
 		Font font = new Font("SansSerif", Font.BOLD, 18);
-		JTextArea textArea = new JTextArea();
+		final JTextArea textArea = new JTextArea();
+		textArea.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				String selectedId = textArea.getSelectedText();
+				showGameDetails(selectedId);
+			}
+		});
+
 		textArea.setFont(font);
 		textArea.setText(sr.getDetails());
 		scrollPane.setViewportView(textArea);
@@ -113,18 +123,7 @@ public class OscarSimulateView extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String id = textField.getText();
-				if (id == null || id.length() == 0)
-					return;
-				BettingStrategy foundOne = null;
-				for (BettingStrategy bettingStrategy : memBsList) {
-					if (bettingStrategy.getId().equals(id)) {
-						foundOne = bettingStrategy;
-					}
-				}
-				if (foundOne != null) {
-					SimulateGameDetail sgd = new SimulateGameDetail(foundOne);
-					sgd.setVisible(true);
-				}
+				showGameDetails(id);
 
 			}
 		});
@@ -140,5 +139,24 @@ public class OscarSimulateView extends JFrame {
 		});
 		btnNewButton_1.setBounds(665, 141, 175, 25);
 		contentPane.add(btnNewButton_1);
+
+		JLabel lblNewLabel_10 = new JLabel("Oyunun id'sini mouse ile secerek de gorebilirsiniz. ( Text Highlight )");
+		lblNewLabel_10.setBounds(534, 118, 516, 15);
+		contentPane.add(lblNewLabel_10);
+	}
+
+	private void showGameDetails(String id) {
+		if (id == null || id.length() == 0)
+			return;
+		BettingStrategy foundOne = null;
+		for (BettingStrategy bettingStrategy : memBsList) {
+			if (bettingStrategy.getId().equals(id)) {
+				foundOne = bettingStrategy;
+			}
+		}
+		if (foundOne != null) {
+			SimulateGameDetail sgd = new SimulateGameDetail(foundOne);
+			sgd.setVisible(true);
+		}
 	}
 }
